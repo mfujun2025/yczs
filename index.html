@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>野草助手口令激活中心 | 自动发卡</title>
+<meta name="keywords" content="野草助手,口令激活,直播源,自动发卡,永久会员,影视仓"/>
+<meta name="description" content="野草助手官方激活中心，在线支付自动发卡，24小时自助购买，稳定高清直播源。"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial}
+body{background:#f4f6f8;color:#222;padding:20px 15px}
+.container{max-width:420px;margin:0 auto}
+.card{background:#fff;border-radius:20px;padding:28px 24px;margin-bottom:20px;box-shadow:0 8px 30px rgba(0,0,0,0.06)}
+.title{font-size:24px;font-weight:800;text-align:center;margin-bottom:6px}
+.subtitle{text-align:center;color:#666;font-size:14px;margin-bottom:24px}
+
+.package-box{margin:20px 0}
+.package-item{background:#f7f8fc;border-radius:16px;padding:18px 20px;margin-bottom:12px;cursor:pointer}
+.package-item.active{background:#e6f0ff;border:2px solid #007aff}
+.package-name{font-size:16px;font-weight:700;margin-bottom:4px}
+.package-desc{font-size:12px;color:#666;margin-bottom:8px}
+.package-price{font-size:18px;font-weight:800;color:#007aff}
+
+.buy-btn{width:100%;height:54px;background:#007aff;color:#fff;border:none;border-radius:16px;font-size:17px;font-weight:700;margin-top:10px}
+.buy-btn:disabled{background:#ccc}
+
+.code-box{margin-top:20px;padding:14px;background:#f8fff9;border:1px solid #00c851;border-radius:14px;text-align:center}
+.code-title{font-size:14px;color:#333;margin-bottom:6px}
+.code-text{font-size:20px;font-weight:800;color:#00c851;letter-spacing:2px}
+.code-tip{font-size:12px;color:#666;margin-top:6px}
+
+.input-line{width:100%;height:50px;border:1px solid #eaeaea;border-radius:14px;text-align:center;font-size:17px;letter-spacing:3px;outline:none;margin:14px 0}
+.activate-btn{width:100%;height:50px;background:#007aff;color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:600}
+.result{text-align:center;margin-top:12px;font-size:15px;height:20px}
+.success{color:#00c851}
+.error{color:#ff4444}
+
+.pay-tip{text-align:center;font-size:12px;color:#999;margin-top:10px}
+.ad{text-align:center;font-size:12px;color:#888;margin-top:20px}
+.ad a{color:#007aff;text-decoration:none}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="card">
+  <div class="title">野草助手激活中心</div>
+  <div class="subtitle">自助购买 · 自动发卡 · 24小时秒发</div>
+
+  <div class="package-box">
+    <div class="package-item" data-type="month" data-price="19.9" data-code="YC01">
+      <div class="package-name">月卡会员</div>
+      <div class="package-desc">1个月稳定使用 | 高清直播源</div>
+      <div class="package-price">¥19.9</div>
+    </div>
+    <div class="package-item" data-type="season" data-price="39.9" data-code="YC02">
+      <div class="package-name">季卡会员</div>
+      <div class="package-desc">3个月稳定使用 | 无广告</div>
+      <div class="package-price">¥39.9</div>
+    </div>
+    <div class="package-item" data-type="year" data-price="69.9" data-code="YC03">
+      <div class="package-name">年卡会员</div>
+      <div class="package-desc">12个月超长使用 | 高速源</div>
+      <div class="package-price">¥69.9</div>
+    </div>
+    <div class="package-item" data-type="forever" data-price="128" data-code="YC88">
+      <div class="package-name">永久会员</div>
+      <div class="package-desc">终身使用 | 永久更新源</div>
+      <div class="package-price">¥128</div>
+    </div>
+  </div>
+
+  <button class="buy-btn" onclick="buyNow()">立即购买（自动发卡）</button>
+
+  <div id="payResult" style="display:none;margin-top:16px">
+    <div class="code-box">
+      <div class="code-title">✅ 支付成功，你的激活口令</div>
+      <div class="code-text" id="showCode"></div>
+      <div class="code-tip">复制口令 → 下方输入激活</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="font-weight:700;text-align:center;margin-bottom:16px">口令激活区</div>
+  <input type="text" class="input-line" id="codeInput" placeholder="输入4位激活口令" maxlength="4">
+  <button class="activate-btn" onclick="activeNow()">立即激活</button>
+  <div class="result" id="activeResult"></div>
+</div>
+
+<div class="ad">
+  商务合作 | 源头货源 <a href="https://172.lot-ml.com/ProductEn/Index/04a04744e3c8d9a6" target="_blank">点击咨询</a>
+</div>
+
+</div>
+
+<script>
+// 自动发卡口令库（可无限添加）
+const cardList = {
+  "YC01": { url: "https://tv.yecao.com/yueka.m3u", expire: "30天", msg: "月卡会员激活成功" },
+  "YC02": { url: "https://tv.yecao.com/jika.m3u", expire: "90天", msg: "季卡会员激活成功" },
+  "YC03": { url: "https://tv.yecao.com/nianka.m3u", expire: "365天", msg: "年卡会员激活成功" },
+  "YC88": { url: "https://tv.yecao.com/yongjiu.m3u", expire: "forever", msg: "永久会员激活成功" }
+};
+
+let selectedCode = "";
+const items = document.querySelectorAll(".package-item");
+items.forEach(i => {
+  i.onclick = () => {
+    items.forEach(x => x.classList.remove("active"));
+    i.classList.add("active");
+    selectedCode = i.dataset.code;
+  }
+});
+
+// 自动购买发卡（模拟支付成功，可对接真实支付）
+function buyNow(){
+  if(!selectedCode){alert("请选择套餐");return}
+  if(confirm("确认购买？支付后自动显示口令")){
+    document.getElementById("showCode").innerText = selectedCode;
+    document.getElementById("payResult").style.display = "block";
+  }
+}
+
+// 激活验证
+function activeNow(){
+  const code = document.getElementById("codeInput").value.trim();
+  const res = document.getElementById("activeResult");
+  if(code.length!==4){res.className="error";res.innerText="请输入4位口令";return}
+  if(!cardList[code]){res.className="error";res.innerText="口令无效";return}
+  
+  res.className="success";
+  res.innerText = cardList[code].msg;
+  setTimeout(()=>{window.location.href=cardList[code].url},1500);
+}
+</script>
+</body>
+</html>
